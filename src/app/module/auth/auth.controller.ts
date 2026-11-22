@@ -114,7 +114,6 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 });
 
 const googleLogIn = catchAsync(async (req: Request, res: Response) => {
-  console.log("google login");
   const payload = req.body;
   const result = await AuthService.googleLogIn(payload);
   const { accessToken, refreshToken } = result;
