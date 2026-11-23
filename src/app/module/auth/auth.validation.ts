@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 const ForgotPasswordZodSchema = z.object({
-  email: z.email,
+  email: z.email()
 });
 const ResetPasswordZodSchema = z.object({
   email: z.email(),
@@ -32,6 +32,8 @@ const UserRegistrationsZodSchema = z.object({
     .regex(/[0-9]/, "Password must contain atleast 1 Number")
     .regex(/[^A-Za-z0-9]/, "Password must contain atleast 1 Special Character"),
 });
+
+
 
 export const UserValidation = {
   ForgotPasswordZodSchema,

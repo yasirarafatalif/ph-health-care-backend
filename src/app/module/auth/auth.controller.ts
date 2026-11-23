@@ -147,8 +147,18 @@ const forgetPassword = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "New tokens generated successfully",
-    data: {},
+    message: "Password reset OTP sent successfully. Please check your email.",
+    data: null,
+  });
+});
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const result = await AuthService.resetPassword(payload);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password Change Successfully. Please check your email.",
+    data: null,
   });
 });
 
@@ -157,6 +167,6 @@ export const AuthController = {
   loginUser,
   getMe,
   refreshToken,
-  googleLogIn,
+  googleLogIn,resetPassword,
   forgetPassword,
 };

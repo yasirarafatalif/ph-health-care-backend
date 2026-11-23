@@ -23,5 +23,10 @@ export default {
 	tester_admin_password : process.env.DEMO_ADMIN_PASSWORD!,
 	tester_doctor_name : process.env.DEMO_DOCTOR_NAME!,
 	tester_doctor_email: process.env.DEMO_DOCTOR_EMAIL!,
-	tester_doctor_password: process.env.DEMO_DOCTOR_PASSWORD!
+	tester_doctor_password: process.env.DEMO_DOCTOR_PASSWORD!,
+	redis_username:process.env.REDIS_USERNAME!,
+	redis_password:process.env.REDIS_PASSWORD!,
+	redis_host:process.env.REDIS_HOST!,
+	redis_port:process.env.REDIS_PORT!,
+	resend_api_key:process.env.RESEND_API_KEY!
 };

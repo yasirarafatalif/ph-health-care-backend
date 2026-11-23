@@ -1,25 +1,32 @@
 import app from "./app";
 import config from "./app/config";
 import { prisma } from "./app/lib/prisma";
-import { seedTesterAdmin, seedTesterDoctor, SuperAdmin } from "./app/utils/seed";
+import { redisClient } from "./app/lib/redis";
+import {
+  seedTesterAdmin,
+  seedTesterDoctor,
+  SuperAdmin,
+} from "./app/utils/seed";
 
 const PORT = config.port;
 
 const main = async () => {
-	try {
-		await prisma.$connect();
-		console.log("Connected to the database successfully.");
-		await SuperAdmin();
-		await seedTesterAdmin();
-		await seedTesterDoctor();
-		app.listen(PORT, () => {
-			console.log(`Server is running on port ${PORT}`);
-		});
-	} catch (error) {
-		console.error("Error starting the server:", error);
-		await prisma.$disconnect();
-		process.exit(1);
-	}
+  try {
+    await prisma.$connect();
+    console.log("Connected to the database successfully.");
+	 await redisClient.connect();
+	console.log("redis is successfully connect")
+    await SuperAdmin();
+    await seedTesterAdmin();
+    await seedTesterDoctor();
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Error starting the server:", error);
+    await prisma.$disconnect();
+    process.exit(1);
+  }
 };
 
 main();
