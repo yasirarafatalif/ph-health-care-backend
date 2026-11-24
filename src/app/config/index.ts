@@ -28,5 +28,8 @@ export default {
 	redis_password:process.env.REDIS_PASSWORD!,
 	redis_host:process.env.REDIS_HOST!,
 	redis_port:process.env.REDIS_PORT!,
-	resend_api_key:process.env.RESEND_API_KEY!
+	resend_api_key:process.env.RESEND_API_KEY!,
+	cloud_name:process.env.CLOUD_NAME!,
+	cloud_api_key:process.env.CLOUD_API_KEY!,
+	cloud_api_secret:process.env.CLOUD_API_SECRET!
 };

@@ -5,6 +5,8 @@ model User {
   password           String?
   googleId           String?
   authProvider       AuthProvider @default(CREDENTIAL)
+  imagePublicId      String       @default("")
+  imageUrl           String       @default("")
   emailVerified      Boolean      @default(false)
   role               Role         @default(PATIENT)
   status             UserStatus   @default(ACTIVE)
