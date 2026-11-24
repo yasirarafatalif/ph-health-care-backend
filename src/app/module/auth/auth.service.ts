@@ -35,49 +35,85 @@ const registerPatient = async (payload: IRegisterPatientPayload) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 8);
+  const expirationSeconds = 5 * 60;
 
-  const createdUser = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-      role: Role.PATIENT,
-      status: UserStatus.ACTIVE,
-      emailVerified: false,
-      patient: {
-        create: { name, email },
-      },
+  const otpKey = `patient-registration-otp:${email}`;
+  const otpValue = crypto.randomInt(100000, 1000000).toString();
+
+  await redisClient.set(otpKey, otpValue, {
+    expiration: {
+      type: "EX",
+      value: expirationSeconds,
     },
-    omit: { password: true },
-    include: { patient: true },
   });
 
-  const { patient, ...user } = createdUser;
-  const jwtPayload = {
-    userId: user.id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
+  const patientRegistrationKey = `patient-registration-data:${email}`;
+  const redisUserDataPayload = {
+    name,
+    email,
+    password: hashedPassword,
   };
 
-  const accessToken = jwtUtils.createToken(
-    jwtPayload,
-    config.jwt_access_secret,
-    config.jwt_access_expires_in as SignOptions,
+  await redisClient.set(
+    patientRegistrationKey,
+    JSON.stringify(redisUserDataPayload),
+    {
+      expiration: {
+        type: "EX",
+        value: expirationSeconds,
+      },
+    },
   );
 
-  const refreshToken = jwtUtils.createToken(
-    jwtPayload,
-    config.jwt_refresh_secret,
-    config.jwt_refresh_expires_in as SignOptions,
-  );
+  await EmailService.sendEmail({
+    to: payload.email,
+    subject: "Verify Your Email Address | PH-Health-Care",
+    templateName: "registration-otp",
+    templateData: {
+      name: name,
+      email: email,
+      otp: otpValue,
+      year: new Date().getFullYear(),
+    },
+  });
 
-  return {
-    user,
-    patient,
-    accessToken,
-    refreshToken,
-  };
+  // const createdUser = await prisma.user.create({
+  //   data: {
+  //     name,
+  //     email,
+  //     password: hashedPassword,
+  //     role: Role.PATIENT,
+  //     status: UserStatus.ACTIVE,
+  //     emailVerified: false,
+  //     patient: {
+  //       create: { name, email },
+  //     },
+  //   },
+  //   omit: { password: true },
+  //   include: { patient: true },
+  // });
+
+  // const { patient, ...user } = createdUser;
+  // const jwtPayload = {
+  //   userId: user.id,
+  //   name: user.name,
+  //   email: user.email,
+  //   role: user.role,
+  // };
+
+  // const accessToken = jwtUtils.createToken(
+  //   jwtPayload,
+  //   config.jwt_access_secret,
+  //   config.jwt_access_expires_in as SignOptions,
+  // );
+
+  // const refreshToken = jwtUtils.createToken(
+  //   jwtPayload,
+  //   config.jwt_refresh_secret,
+  //   config.jwt_refresh_expires_in as SignOptions,
+  // );
+
+  return null;
 };
 
 const loginUser = async (payload: ILoginUserPayload) => {
@@ -375,6 +411,7 @@ const forgetPassword = async (payload: IForgotPasswordPayload) => {
     templateName: "forgot-password",
     templateData: {
       name: isUserExist.name,
+      email: isUserExist.email,
       otp,
       year: new Date().getFullYear(),
     },
@@ -451,12 +488,12 @@ const resetPassword = async (payload: IResetPasswordPayload) => {
     templateName: "password-reset-success",
     templateData: {
       name: isUserExist.name,
+      email: isUserExist.email,
       year: new Date().getFullYear(),
     },
   });
 
-
-  // this is only use for nodemailer 
+  // this is only use for nodemailer
 
   // const tempatePath = path.join(
   //   process.cwd(),
