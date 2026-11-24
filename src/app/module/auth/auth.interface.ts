@@ -25,6 +25,10 @@ export interface IGoogleLogInPayload{
 export interface IForgotPasswordPayload{
 	email : string
 }
+export interface IEmailVerifyPayload{
+	email : string,
+	otp:string
+}
 export interface IResetPasswordPayload{
 	email : string,
 	newPassword:string,

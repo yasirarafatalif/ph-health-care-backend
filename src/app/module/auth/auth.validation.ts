@@ -3,6 +3,10 @@ import * as z from "zod";
 const ForgotPasswordZodSchema = z.object({
   email: z.email()
 });
+const EmailVerificationsZodSchema = z.object({
+  email: z.email(),
+  otp: z.string()
+});
 const ResetPasswordZodSchema = z.object({
   email: z.email(),
   newPassword: z
@@ -38,6 +42,7 @@ const UserRegistrationsZodSchema = z.object({
 export const UserValidation = {
   ForgotPasswordZodSchema,
   ResetPasswordZodSchema,
+  EmailVerificationsZodSchema,
   UserRegistrationsZodSchema,
   UserLoginZodSchema
 };
