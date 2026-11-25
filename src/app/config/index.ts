@@ -31,5 +31,10 @@ export default {
 	resend_api_key:process.env.RESEND_API_KEY!,
 	cloud_name:process.env.CLOUD_NAME!,
 	cloud_api_key:process.env.CLOUD_API_KEY!,
-	cloud_api_secret:process.env.CLOUD_API_SECRET!
+	cloud_api_secret:process.env.CLOUD_API_SECRET!,
+	bkash_username:process.env.BKASH_USERNAME!,
+	bkash_password:process.env.BKASH_PASSWORD!,
+	bkash_api_key:process.env.BKASH_APP_KEY!,
+	bkash_secret:process.env.BKASH_APP_SECRET!,
+	bkash_app_url:process.env.BKASH_APP_URL!,
 };

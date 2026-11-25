@@ -10,6 +10,7 @@ import { redisClient } from "./app/lib/redis";
 import crypto from "crypto";
 import { Resend } from "resend";
 import { UserRoutes } from "./app/module/user/user.routes";
+import { getBkashIdToken } from "./app/lib/bkash";
 
 const app: Application = express();
 
@@ -27,6 +28,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
+app.use("/bkash", async (req: Request, res: Response) => {
+  const bkashres = await getBkashIdToken();
+  console.log(bkashres);
+  res.status(httpStatus.OK).json({
+    success: true,
+    message: "Bkash System Backend",
+  });
+});
 app.use("/test", async (req: Request, res: Response) => {
   try {
     const resend = new Resend(config.resend_api_key);
@@ -62,7 +71,6 @@ app.use("/test", async (req: Request, res: Response) => {
 
 app.use("/api/v1/auth", AuthRoutes);
 app.use("/api/v1/user", UserRoutes);
-
 
 // Basic route
 app.get("/", async (req: Request, res: Response) => {
